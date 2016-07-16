@@ -27,6 +27,19 @@ $(document).ready(function() {
 		console.log('Geolocation is not supported');
 	}
 
+	$.getJSON('pokedex.json', function(data) {
+		$('select').empty();
+		for(var i in data) {
+			var id = parseInt(i) + 1;
+			var option = $('<option />').attr('value', id).text(data[id]);
+			$('select').append(option);
+		}
+	});
+
+	$('select').change(function() {
+		$('input').val($('option:selected').attr('value'));
+	});
+
 });
 
 function errorCallback() {}
