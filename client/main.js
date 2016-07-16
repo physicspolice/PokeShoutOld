@@ -9,13 +9,12 @@ $(document).ready(function() {
 			'pokemon': $('input').val(),
 			'position': [s_position.latitude, s_position.longitude]
 		};
-		socket.emit('chat message', message);
+		socket.emit('ping', message);
 		$('input').val('');
 		return false;
 	});
 
-	socket.on('chat message', function(ping) {
-		console.log('see', ping.position);
+	socket.on('ping', function(ping) {
 		var text = 'Saw ' + (ping.pokemon ? ping.pokemon : 'pokemon');
 		text += ' at ' + ping.position[0] + ', ' + ping.position[1] + '!';
 		$('ul').append($('<li>').text(text));
@@ -24,31 +23,35 @@ $(document).ready(function() {
 	if (navigator && navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 	} else {
-		console.log('Geolocation is not supported');
+		errorCallback();
 	}
 
 	$.getJSON('pokedex.json', function(data) {
-		$('select').empty();
+		$('#pokedex').empty();
 		for(var i in data) {
 			var id = parseInt(i) + 1;
-			var option = $('<option />').attr('value', id).text(data[id]);
-			$('select').append(option);
+			var pokemon = $('<img />')
+				.attr('src', 'sprites/' + id + '.png')
+				.attr('title', data[id])
+				.attr('data-id', id);
+			$('#pokedex').append(pokemon);
 		}
 	});
 
-	$('select').change(function() {
-		$('input').val($('option:selected').attr('value'));
+	$('#pokedex').on('click', 'img', function() {
+		$('input').val($(this).attr('data-id'));
 	});
 
 });
 
-function errorCallback() {}
+function errorCallback() {
+	console.log('Geolocation is not supported!');
+}
  
 function successCallback(position) {
 	var mapUrl = "http://maps.google.com/maps/api/staticmap?center=";
 	mapUrl += position.coords.latitude + ',' + position.coords.longitude;
 	mapUrl += '&zoom=15&size=512x512&maptype=roadmap&sensor=false';
-	$("img").attr('src', mapUrl);
+	$("#map img").attr('src', mapUrl);
 	s_position = position.coords;
-	console.log('set', s_position);
 }

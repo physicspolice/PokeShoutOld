@@ -27,3 +27,6 @@ https://www.npmjs.com/package/sqlite3
 
 Pokedex
 https://pokeapi.co/docsv2/
+
+Touch
+https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/HandlingEvents/HandlingEvents.html
